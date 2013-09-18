@@ -1,0 +1,37 @@
+Multiplier module readme
+=============================
+
+This module is an asyncronous multiplier and requires no reset or enable ports.
+
+The adder module takes in 2 numbers, possibly with differing bit widths and
+multipliers them together. The output bit width is set to the sum of the input
+bit widths.. 
+
+Due to the nature of fractional numbers the multiplier can handle fixed point
+arithmetic, the designer is responsible for keeping track of the decimal point.
+
+There is possible bit growth of the sum of the lengths of the factors. For
+fixed point arithmetic the multiplier will add the total number of bits from
+each argument before and after the point. So if you had a multiplier with 8.5
+bits on one input and 3.7 bits on another input you should have 11.12 bits on
+the output.
+
+
+Properties
+   Asyncronous
+   no reset
+   no enable
+
+
+Parameters:
+   DATA_WIDTH_1
+   DATA_WIDTH_2
+
+
+Ports:
+   Inputs:
+      data1_i
+      data2_i
+   Outputs:
+      data_o
+

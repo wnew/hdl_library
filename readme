@@ -1,0 +1,4 @@
+The primitive modules are modules that represent a basic HDL functionaitly
+without instantiating any other modules within it. They are used to build 
+up the DSP and Controller libraries. The idea is that they are highly 
+parameterized to allow for as much flexiblity as possible. 

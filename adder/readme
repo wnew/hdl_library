@@ -1,0 +1,34 @@
+Adder module readme
+=============================
+
+This module is an asyncronous adder and requires no reset or enable ports.
+
+The adder module takes in 2 numbers, possibly with differing bit widths and
+adds them together. The output bit width is set to the highest input bit width
++ 1. This effectively makes the highest bit of the output the carry bit. 
+
+Due to the nature of fractional numbers the adder can handle addition of 
+fractions, the designer is responsible for keeping track of the decimal point.
+
+There is possible bit growth of a single when doing addition, the max output
+will only be one bit longer then the longest input.
+
+
+Properties
+   Asyncronous
+   no reset
+   no enable
+
+
+Parameters:
+   DATA_WIDTH_1
+   DATA_WIDTH_2
+
+
+Ports:
+   Inputs:
+      data1_i
+      data2_i
+   Outputs:
+      data_o
+
