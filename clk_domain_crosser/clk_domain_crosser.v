@@ -18,10 +18,10 @@ module clk_domain_crosser #(
       //===============
       // Input Ports
       //===============
-      input                  clk1,
-      input                  clk2,
+      input                  in_clk,
+      input                  out_clk,
       input                  rst,
-      input  [DATA_WIDTH-1:0] data_in,
+      input [DATA_WIDTH-1:0] data_in,
       
       //===============
       // Output Ports
@@ -30,26 +30,26 @@ module clk_domain_crosser #(
    );
  
    reg [DATA_WIDTH-1:0] data_out_meta;
-   reg [DATA_WIDTH-1:0] data_out_reg;
-   reg [DATA_WIDTH-1:0] data_out_reg_r;
+   reg [DATA_WIDTH-1:0] data_out_reg_0;
+   reg [DATA_WIDTH-1:0] data_out_reg_1;
    wire[DATA_WIDTH-1:0] data_out;
     
    // Assign statements
    assign data_out = data_out_reg_r;
     
    // Always block to declare  synchronous logic from source clock domain 
-   always @ (posedge clk1) begin
+   always @ (posedge in_clk) begin
       data_out_meta <= data_in;
    end
    // Always block to declare synchronous logic in destination clock domain
     
-   always @ (posedge clk2 or posedge rst) begin
+   always @ (posedge out_clk or posedge rst) begin
       if (`ifdef ACTIVE_LOW_RST !rst `else rst `endif) begin
-         data_out_reg   <= 'b0;
-         data_out_reg_r <= 'b0;
+         data_out_reg_0 <= 'b0;
+         data_out_reg_1 <= 'b0;
       end else begin
-         data_out_reg   <= data_out_meta;
-         data_out_reg_r <= data_out_reg;
+         data_out_reg_0 <= data_out_meta;
+         data_out_reg_1 <= data_out_reg_0;
       end
    end
 endmodule
