@@ -3,7 +3,7 @@
 //      Parameterize Clock Domain Crosser                                     //
 //                                                                            //
 //      Module name: clk_domain_crosser                                       //
-//      Desc: parameterized module to move data demains clock domains         //
+//      Desc: parameterized module to move data between clock domains         //
 //      Date: Sept 2013                                                       //
 //      Developer: Wesley New                                                 //
 //      Licence: GNU General Public License ver 3                             //
@@ -32,17 +32,18 @@ module clk_domain_crosser #(
    reg [DATA_WIDTH-1:0] data_out_meta;
    reg [DATA_WIDTH-1:0] data_out_reg_0;
    reg [DATA_WIDTH-1:0] data_out_reg_1;
+   reg [DATA_WIDTH-1:0] data_out_reg_2;
    wire[DATA_WIDTH-1:0] data_out;
     
    // Assign statements
-   assign data_out = data_out_reg_r;
+   assign data_out = data_out_reg_2;
     
    // Always block to declare  synchronous logic from source clock domain 
    always @ (posedge in_clk) begin
       data_out_meta <= data_in;
    end
+
    // Always block to declare synchronous logic in destination clock domain
-    
    always @ (posedge out_clk or posedge rst) begin
       if (`ifdef ACTIVE_LOW_RST !rst `else rst `endif) begin
          data_out_reg_0 <= 'b0;
@@ -50,6 +51,7 @@ module clk_domain_crosser #(
       end else begin
          data_out_reg_0 <= data_out_meta;
          data_out_reg_1 <= data_out_reg_0;
+         data_out_reg_2 <= data_out_reg_1;
       end
    end
 endmodule

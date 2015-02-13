@@ -1,9 +1,9 @@
 //============================================================================//
 //                                                                            //
-//      Clock Domain Crosser test bench                                       //
+//      Runtime Variable Delay test bench                                     //
 //                                                                            //
-//      Module name: clk_domain_crosser_tb                                    //
-//      Desc: runs and tests the clk_domain_crosser module                    //
+//      Module name: rt_var_delay_tb                                          //
+//      Desc: runs and tests the rt_var_delay module                          //
 //      Date: Jan 2014                                                        //
 //      Developer: Wesley New                                                 //
 //      Licence: GNU General Public License ver 3                             //
@@ -11,78 +11,77 @@
 //                                                                            //
 //============================================================================//
 
-module clk_domain_crosser_tb;
+module rt_var_delay_tb;
 
    //===================
    // local parameters
    //===================
-   localparam LOCAL_DATA_WIDTH = `ifdef DATA_WIDTH `DATA_WIDTH `else 32 `endif;
+   localparam LOCAL_DATA_WIDTH    = 8'h8;
+   localparam LOCAL_INITIAL_DELAY = 8'h8;
+   localparam LOCAL_DELAY_DEPTH   = 8'h8;
 
    //=============
    // local regs
    //=============
-   reg in_clk;
-   reg out_clk;
-   reg rst;
-   reg [LOCAL_DATA_WIDTH-1:0] data_in;
-   
+   reg clk;
+   reg en;
+   reg in;
+   reg [4:0] delay;
+
    //==============
    // local wires
    //==============
-   wire [LOCAL_DATA_WIDTH-1:0] data_out;
+   wire out;
 
    //=====================================
    // instance, "(d)esign (u)nder (t)est"
    //=====================================
-   clk_domain_crosser #(
-      .DATA_WIDTH   (`ifdef DATA_WIDTH `DATA_WIDTH `else 32 `endif)
+   rt_var_delay #(
+      .DATA_WIDTH (LOCAL_DATA_WIDTH)
    ) dut (
-      .in_clk    (in_clk),
-      .out_clk   (out_clk),
-      .rst       (rst),
-      .data_in   (data_in),
-      .data_out  (data_out)
+      .clk (clk), 
+      .en  (en), 
+      .delay (delay),
+      .in  (in), 
+      .out (out)
    );
 
+   
    //=============
    // initialize
    //=============
-   initial begin
+   initial
+   begin
       $dumpvars;
-      in_clk  = 0;
-      out_clk = 0;
-      rst     = 0;
-
-      data_in = 32'h1234EFEF;
+      clk = 1'b1;
+      en  = 1'b1;
+      delay = 5'd3;
+      in  = 8'b10101010;
+      #6
+      in  = 8'b01010101;
       #4
-      data_in = 32'hEEEEEEEE;
-      #4
-      data_in = 32'h1F184FE4;
-      #4
-      data_in = 32'h11111111;
-      #4
-      data_in = 32'h1F1F1F1F;
-      #4
-      data_in = 32'h1234EFEF;
-      #16
-      $finish;
+      delay = 5'd5;
+      in  = 8'b11110000;
+      #8
+      in  = 8'b00001111;
    end
 
    //====================
    // simulate the clock
    //====================
-   always #1 begin
-      in_clk = ~in_clk;
-   end
-   always #2 begin
-      out_clk = ~out_clk;
+   always #1
+   begin
+      clk = ~clk;
    end
 
    //===============
    // print output
    //===============
-   always @(posedge in_clk) begin
-      $display(data_out);
-   end
+   always @(negedge clk) $display(out);
    
+   //===============================
+   // finish after 100 clock cycles
+   //===============================
+   initial #100 $finish;
+
 endmodule
