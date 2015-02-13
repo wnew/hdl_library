@@ -27,7 +27,7 @@ module delay #(
       input                   rst,
       input  [DATA_WIDTH-1:0] din,
       output [DATA_WIDTH-1:0] dout,
-      output                  data_valid
+      output                  dvalid
    );
 
    // Generate according to implementation
@@ -42,13 +42,14 @@ module delay #(
                .DATA_WIDTH   (DATA_WIDTH),
                .DELAY_CYCLES (DELAY_CYCLES)
             ) dut (
-               .clk        (clk),
-               .din        (din),
-               .dout       (dout),
-               .data_valid (data_valid)
+               .clk    (clk),
+               .din    (din),
+               .dout   (dout),
+               .dvalid (dvalid)
             );
          end
-	 //============================
+
+         //============================
          // FIFO delay implementation
          //============================
          "FIFO" : begin // shifts the input data through a FIFO
@@ -56,10 +57,10 @@ module delay #(
                .DATA_WIDTH   (DATA_WIDTH),
                .DELAY_CYCLES (DELAY_CYCLES)
             ) dut (
-               .clk        (clk),
-               .din        (din),
-               .dout       (dout),
-               .data_valid (data_valid)
+               .clk    (clk),
+               .din    (din),
+               .dout   (dout),
+               .dvalid (dvalid)
             );
          end
       endcase

@@ -15,8 +15,8 @@ module pulse #(
       //==============================
       // Top level block parameters
       //==============================
-      parameter PULSE_FREQ = 10, // Number of cycles between pulses
-      parameter PULSE_LEN  = 1   // Number of cycles each pulse lasts
+      parameter PULSE_FREQ  = 10, // Number of cycles between pulses
+      parameter PULSE_WIDTH = 1   // Number of cycles each pulse lasts
    ) (
       //==============
       // Input Ports
@@ -47,7 +47,7 @@ module pulse #(
       if ((`ifdef ACTIVE_LOW_RST rst `else !rst `endif)) begin
          if (en) begin
             count <= count + 1'b1;
-            if (count < PULSE_LEN)
+            if (count < PULSE_WIDTH)
                pulse_state <= PULSE_HIGH;
             else if (count < PULSE_FREQ-1)
                pulse_state <= PULSE_LOW;

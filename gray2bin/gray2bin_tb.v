@@ -12,13 +12,15 @@
 //                                                                            //
 //============================================================================//
 
+`timescale 1ns/100ps
+
 module gray2bin_tb;
 
    //===================
    // local parameters
    //===================
    localparam LOCAL_DATA_WIDTH = `ifdef DATA_WIDTH `DATA_WIDTH `else 8 `endif;
-
+   
    //=============
    // local regs
    //=============
@@ -29,6 +31,11 @@ module gray2bin_tb;
    // local wires
    //==============
    wire [LOCAL_DATA_WIDTH-1:0] data_out;
+   
+   //==================
+   // local variables
+   //==================
+   reg error = 0;
 
    //=====================================
    // instance, "(d)esign (u)nder (t)est"
@@ -45,16 +52,44 @@ module gray2bin_tb;
    //=============
    initial begin
       $dumpvars;
+      $timeformat(-9, 1, "ns", 7);
+      $display("\n===================================");
+      $display(" Running testbench %m ");
+      $display("===================================\n");
+      $display("  ", "Time Datain Dataout");
+      $monitor("\t%d %b %b", $realtime, data_in, data_out);
+      error   = 0;
       clk      = 0;
       data_in  = 8'b01010101;
       #3
+      if (data_out != 8'b01100110)
+         error = 1;
       data_in  = 8'b01010111;
       #3
+      if (data_out != 8'b01100101)
+         error = 1;
       data_in  = 8'b01010011;
       #3
+      if (data_out != 8'b01100010)
+         error = 1;
       data_in  = 8'b01011011;
       #3
+      if (data_out != 8'b01101101)
+         error = 1;
       data_in  = 8'b01110011;
+      #3
+      if (data_out != 8'b01011101)
+         error = 1;
+      #7
+
+      $display("\n===================================");
+      if (error)
+        $display(" Failed : Testbench %m");
+      else
+        $display(" Passed : Testbench %m");
+
+      $display("===================================\n");
+      $finish;
    end
 
    //====================
@@ -63,15 +98,5 @@ module gray2bin_tb;
    always #1 begin
       clk = ~clk;
    end
-
-   //===============
-   // print output
-   //===============
-   always @(posedge clk) $display(data_out);
-   
-   //===============================
-   // finish after 100 clock cycles
-   //===============================
-   initial #20 $finish;
 
 endmodule

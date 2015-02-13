@@ -16,39 +16,43 @@ module delay_line_tb;
    reg        clk;
    reg  [7:0] din;
    wire [7:0] dout;
-   wire       data_valid;
+   wire       dvalid;
 
    delay #(
-      .DELAY_TYPE   ("FIFO"),
+      .DELAY_TYPE   ("SYNC"),
+      //.DELAY_TYPE   ("FIFO"),
       .DATA_WIDTH   (8),
       .DELAY_CYCLES (4) 
    ) dut (
-      .clk  (clk),
-      .din  (din),
-      .dout (dout),
-      .data_valid (data_valid)
+      .clk    (clk),
+      .din    (din),
+      .dout   (dout),
+      .dvalid (dvalid)
    );
 
    initial
    begin
       $dumpvars;
+      $timeformat(-9, 1, "ns", 7);
+      $display("\n===================================");
+      $display(" Running testbench %m ");
+      $display("===================================\n");
+      $display("  ", "Time Datain Dataout");
+      $monitor("\t%d %b %b", $realtime, din, dout);
       clk = 1;
       din = 8'hAB;
       #3
       din = 8'h11;
+      #20
+      $display("\n===================================");
+      $display(" Passed : Testbench %m");
+      $display("===================================\n");
+      $finish;
    end
 
    always #1
    begin
       clk = ~clk;
    end
-
-
-   always @(posedge clk) $display(dout);
-
-   //===============================
-   // finish after 100 clock cycles
-   //===============================
-   initial #40 $finish;
 
 endmodule
